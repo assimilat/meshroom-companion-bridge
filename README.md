@@ -1,3 +1,4 @@
+# This app is pre-alpha
 Arocna3 Meshroom Assistant
 
 A precision photogrammetry companion system designed to streamline the acquisition of high-quality image datasets for AliceVision Meshroom.
