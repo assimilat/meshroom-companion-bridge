@@ -33,9 +33,7 @@ depends=(
   'uvicorn'
 )
 source=(
-  'bridge_server.py'
-  'bridge-server.service'
-  'bridge-server.env'
+  'git+https://github.com/assimilat/meshroom-companion-bridge.git'
 )
 sha256sums=('SKIP' 'SKIP' 'SKIP')
 
@@ -47,13 +45,13 @@ prepare() {
 
 package() {
   # 1. Install the main application script
-  install -Dm755 "${srcdir}/bridge_server.py" "${pkgdir}/usr/share/meshroom-companion/bridge_server.py"
+  install -Dm755 "${srcdir}/meshroom_companion.py" "${pkgdir}/var/lib/meshroom-companion/meshroom_companion.py"
 
   # 2. Install the systemd service unit
-  install -Dm644 "${srcdir}/bridge-server.service" "${pkgdir}/usr/lib/systemd/system/bridge-server.service"
+  install -Dm644 "${srcdir}/pkg/meshroom-companion.service" "${pkgdir}/usr/lib/systemd/system/meshroom-companion.service"
 
   # 3. Install the default environment/configuration file
-  install -Dm644 "${srcdir}/bridge-server.env" "${pkgdir}/etc/meshroom-companion/bridge-server.env"
+  install -Dm644 "${srcdir}/pkg/meshroom-companion.env" "${pkgdir}/etc/conf.d/meshroom-companion.env"
 
   # 4. Install sysusers and tmpfiles for user/directory management
   install -Dm644 meshroom.sysusers "${pkgdir}/usr/lib/sysusers.d/meshroom-companion.conf"
