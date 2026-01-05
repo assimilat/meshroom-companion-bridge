@@ -1,0 +1,30 @@
+[Unit]
+Description=Arocna3 Meshroom Bridge Server
+After=network.target
+Documentation=https://github.com/assimilat/MeshroomAssistant
+
+[Service]
+User=meshroom
+Group=meshroom
+Type=simple
+
+# Path to the environment variables file
+EnvironmentFile=/etc/conf.d/meshroom_companion.conf
+
+# Change to the directory where bridge_server.py is located
+WorkingDirectory=${WORKING_DIR}
+
+# Start the server using the venv python binary and arguments from the env file
+# Systemd will expand these variables at runtime
+ExecStart=${PYTHON_EXEC} bridge_server.py --host ${BRIDGE_HOST} --port ${BRIDGE_PORT} --dir ${BRIDGE_DIR}
+
+# Resilience settings
+Restart=always
+RestartSec=5
+
+# Logging configuration
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

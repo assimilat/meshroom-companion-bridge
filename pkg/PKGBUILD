@@ -1,0 +1,63 @@
+Maintainer: Arocna3
+
+pkgname=meshroom-companion-bridge
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Workstation bridge server for the Meshroom Assistant Android app"
+arch=('any')
+url="https://github.com/assimilat/MeshroomAssistant"
+license=('custom')
+depends=(
+  'python'
+  'python-annotated-doc'
+  'python-annotated-types'
+  'python-anyio'
+  'python-click'
+  'python-fastapi'
+  'python-h11'
+  'python-httptools'
+  'python-idna'
+  'python-pillow'
+  'python-pydantic'
+  'python-python-multipart'
+  'python-qrcode'
+  'python-starlette'
+  'python-typing-inspection'
+  'python-typing_extensions'
+  'python-uvloop'
+  'python-watchfiles'
+  'python-websockets'
+  'python-pyaml'
+  'python-pydantic-core'
+  'python-dotenv'
+  'uvicorn'
+)
+source=(
+  'bridge_server.py'
+  'bridge-server.service'
+  'bridge-server.env'
+)
+sha256sums=('SKIP' 'SKIP' 'SKIP')
+
+prepare() {
+  # Generate sysusers and tmpfiles configurations
+  echo 'u meshroom - "Meshroom Companion User" /var/lib/meshroom_companion' > meshroom.sysusers
+  echo 'd /var/lib/meshroom_companion 0750 meshroom meshroom -' > meshroom.tmpfiles
+}
+
+package() {
+  # 1. Install the main application script
+  install -Dm755 "${srcdir}/bridge_server.py" "${pkgdir}/usr/share/meshroom-companion/bridge_server.py"
+
+  # 2. Install the systemd service unit
+  install -Dm644 "${srcdir}/bridge-server.service" "${pkgdir}/usr/lib/systemd/system/bridge-server.service"
+
+  # 3. Install the default environment/configuration file
+  install -Dm644 "${srcdir}/bridge-server.env" "${pkgdir}/etc/meshroom-companion/bridge-server.env"
+
+  # 4. Install sysusers and tmpfiles for user/directory management
+  install -Dm644 meshroom.sysusers "${pkgdir}/usr/lib/sysusers.d/meshroom-companion.conf"
+  install -Dm644 meshroom.tmpfiles "${pkgdir}/usr/lib/tmpfiles.d/meshroom-companion.conf"
+
+
+}
